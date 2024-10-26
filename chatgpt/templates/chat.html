@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot Interface</title>
+    <style>
+
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            
+        }
+
+        .chat-container {
+            width: 80%;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #3B1E54, #bf87ff);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .chat-body {
+            height: 300px;
+            overflow-y: auto;
+            padding: 50px;
+            
+            border-bottom: 1px solid #ddd;
+            
+        }
+
+        
+
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+
+        .chat-input button {
+            background-color: #3B1E54;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-input button:hover {
+            background-color: #bf87ff;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            max-width: 70%;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .message.user {
+            text-align: right;
+            align-self: flex-end;
+            background-color: #f2e6ff;
+            color: #3B1E54;
+            margin: 10;
+            padding: 10px 15px;
+            max-width: 70%;
+            margin-left: auto;
+            
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background-color: #eaeaea;
+            color: #3B1E54;
+            text-align: left;
+        }
+
+        .typing-indicator {
+            align-self: flex-start;
+            font-style: italic;
+            color: gray;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .btn{
+            background-color: #bf87ff;
+            color: white;
+            text-decoration-style: none;
+        }
+        .print-button {
+            padding: 10px 15px;
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: left;
+            text-decoration: none;
+            /* font-size: 16px; */
+            /* margin: 0 10px; */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .print-button {
+            background: linear-gradient(135deg, #3B1E54, #bf87ff);
+        }
+
+        .print-button:hover {
+            background: linear-gradient(135deg, #3B1E54, #bf87ff);
+        }
+
+    </style>
+    
+</head>
+<body>
+    <div class="chat-container">
+        <a  class="print-button"  href="{% url 'home' %}">Home</button></a>
+        <div class="chat-header">
+            <h2>Ruby</h2>
+        </div>
+        <div class="chat-body" id="chat-body"><h4 class="message.bot">{{data}}</h4></div>
+        <div class="chat-input">
+
+            <input type="text" id="user-input"  name="message"   placeholder="Type here..." autocomplete="off">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBody = document.getElementById('chat-body');
+        const userInput = document.getElementById('user-input');
+
+        function appendMessage(sender, message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            messageDiv.textContent = message;
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;  // Auto-scroll to the bottom
+        }
+
+        function showTypingIndicator() {
+            typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('typing-indicator');
+            typingIndicator.textContent = 'Bot is typing...';
+            chatBody.appendChild(typingIndicator);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            if (typingIndicator) {
+                chatBody.removeChild(typingIndicator);
+                typingIndicator = null;
+            }
+        }
+
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
+
+            // Display the user's message
+            appendMessage('user', message);
+            userInput.value = '';
+
+            // Send the message to the server
+            fetch('/chat/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ 'message': message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the bot's response
+                appendMessage('bot', data.response);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                appendMessage('bot', 'Oops! Something went wrong.');
+            });
+        }
+
+        // Send message on Enter key press
+        userInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

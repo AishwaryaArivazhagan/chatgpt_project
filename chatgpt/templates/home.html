@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot Homepage</title>
+    <style>
+        /* Resetting styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #3B1E54, #bf87ff);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: #3B1E54;
+            font-size: 2rem;
+        }
+
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero h2 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .chat-btn {
+            padding: 15px 30px;
+            background-color: white;
+            color: #3B1E54;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-btn:hover {
+            background-color: #3B1E54;
+            color: white;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            padding: 50px 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .feature-box {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .feature-box h3 {
+            color: #3B1E54;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .feature-box p {
+            color: #555;
+            font-size: 1rem;
+        }
+
+        footer {
+            background-color: #3B1E54;
+            color: rgb(255, 255, 255);
+            text-align: center;
+            padding: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        .chathistory{
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .logout{
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .logout:hover{
+            color:black;
+        }
+        .chathistory:hover{
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to ChatBot</h1>
+    </header>
+{% if user is None %}
+<div class="hero">
+    <h2>Your Friendly AI Assistant</h2>
+    <p>Ask questions, get answers, and have fun chatting!</p>
+   <a href="{%  url 'login' %}" > <button class="chat-btn" >Login here</button></a>
+</div>
+{% else %}
+    <div class="hero">
+        <h2>Hi {{user}}💜</h2>
+        <h2>Your Friendly AI Assistant</h2>
+        <p>Ask questions, get answers, and have fun chatting!</p>
+        <button class="chat-btn" onclick="window.location.href='/chat/'">Chat Now</button>
+        <br>
+        <a class="chathistory" href="{%  url 'prompt_history' %}">Chat History</a>
+        <br>
+        <a  class="logout" href="{% url 'logout' %}">Logout</a>
+
+    </div>
+{% endif %}
+    <div class="features">
+        <div class="feature-box">
+            <h3>Intelligent Conversations</h3>
+            <p>Our bot provides human-like responses with the ability to understand follow-up questions.</p>
+        </div>
+        <div class="feature-box">
+            <h3>24/7 Availability</h3>
+            <p>No matter when you need assistance, the bot is always available to respond to your queries.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Context-Aware Responses</h3>
+            <p>ChatBot remembers your previous messages to deliver smart and context-aware replies.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 ChatBot. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
